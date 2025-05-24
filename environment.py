@@ -6,15 +6,16 @@ class Environment:
     Manages game rules, light status (green/red), timers,
     and win/lose conditions related to the game environment.
     """
-    def __init__(self, window_width=800, green_duration_range=(2, 5), game_duration_range=(50, 61)):
-        self.finish_line_x = window_width - 50 # Adjust this value based on exact doll position
+    def __init__(self, window_width=800, green_duration_range=(2, 5), red_duration_range=(1, 3), game_duration_range=(50, 61)):
+        self.finish_line_x = window_width - 160 # Adjust this value based on exact doll position
         self.light_status = "initial" # Can be "initial", "green", "red"
         self.green_duration_range = green_duration_range
+        self.red_duration_range = red_duration_range # Fixed duration for red light
         self.game_duration_range = game_duration_range
 
         self.green_duration = 0
         self.green_start_time = 0
-        self.red_light_duration = 3 # Fixed duration for red light
+        self.red_duration = 0 # Fixed duration for red light, sebelumnya 3
         self.red_light_start_time = 0
 
         self.game_start_time = 0
@@ -52,7 +53,8 @@ class Environment:
         """
         self.light_status = "red"
         self.red_light_start_time = time.time()
-        print(f"Red Light for {self.red_light_duration} seconds.")
+        self.red_duration = np.random.randint(*self.red_duration_range)
+        print(f"Red Light for {self.red_duration_range} seconds.")
 
     def is_green_light(self):
         """
@@ -85,7 +87,7 @@ class Environment:
         Returns the remaining time for the red light phase.
         """
         if self.is_red_light():
-            return max(0, self.red_light_duration - (time.time() - self.red_light_start_time))
+            return max(0, self.red_duration - (time.time() - self.red_light_start_time))
         return 0
 
     def is_green_light_over(self):
@@ -98,7 +100,7 @@ class Environment:
         """
         Checks if the red light phase has ended.
         """
-        return self.is_red_light() and (time.time() - self.red_light_start_time) >= self.red_light_duration
+        return self.is_red_light() and (time.time() - self.red_light_start_time) >= self.red_duration
 
     def get_remaining_game_time(self):
         """
@@ -120,4 +122,4 @@ class Environment:
         """
         Checks if the player has reached the finish line.
         """
-        return player_x >= self.finish_line_x
+        return player_x > self.finish_line_x + 20
