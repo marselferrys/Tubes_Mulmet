@@ -55,7 +55,7 @@ class Game:
         self.prev_hand_pos = None
         self.user_body_sum_red_light = 0
 
-        self.movement_speed = 20
+        self.movement_speed = 15
         self.threshold_dist_body = 180
         self.min_sound_threshold_to_move = 0.01
         self.max_sound_volume = 0.2
@@ -218,7 +218,7 @@ class Game:
 
 
             elif self.environment.light_status == "transition_to_red":
-                if (time.time() - self.red_light_delay_start_time) >= 1.0:
+                if (time.time() - self.red_light_delay_start_time) >= 0.5:
                     self.environment.switch_to_red_light()
                     self.notification = "Red Light! Jangan Bersuara!"
                 else:

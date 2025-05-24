@@ -148,24 +148,25 @@ class Visualizer:
                 # player.x is relative to the game area (0 to window_width)
                 # player.y is relative to the game area (0 to game_area_height)
                 # So, the blit position is (player.x, self.webcam_area_height + player.y)
-                self.screen.blit(player_surface, (int(player.x), int(self.webcam_area_height + player.y)))
+                self.screen.blit(player_surface, (int(player.x - 50), int(self.webcam_area_height + (player.y - 75))))
             # --- End Draw player character ---
 
-            '''
-            # Draw finish line
-            finish_line_color = (0, 0, 0) # Blue
             
+            '''
+            # mengggambar finish line untuk membantu debugging
+            finish_line_color = (0, 0, 0, 0) 
+        
             # Explicitly cast coordinates to int to prevent any potential TypeError
             line_start_x = int(environment.finish_line_x)
             line_start_y = int(self.webcam_area_height) # Top of the game area
             line_end_x = int(environment.finish_line_x)
             line_end_y = int(self.window_height) # Bottom of the window
             
-           #  pygame.draw.line(self.screen, finish_line_color,
-           #                  (line_start_x, line_start_y),
-           #                  (line_end_x, line_end_y), 5)
+            pygame.draw.line(self.screen, finish_line_color,
+                             (line_start_x, line_start_y),
+                             (line_end_x, line_end_y), 5)
            
-            '''
+           '''
             
             # Draw "Red Light" or "Green Light" text in the game area (bottom part)
             if environment.is_red_light():
