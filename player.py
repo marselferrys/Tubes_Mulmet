@@ -1,12 +1,13 @@
 import numpy as np
 from utils import load_gif_frames # paste_character is no longer used by Player for drawing
 
+
 class Player:
     """
     Represents the player character (Mario) in the game.
     Handles its position, animation, and provides its current frame.
     """
-    def __init__(self, start_x=55, start_y=None, gif_path=None): # start_y will be calculated and set by Game
+    def __init__(self, start_x=55, start_y=None, gif_path=None, game_area_height=550): # start_y will be calculated and set by Game
         self.x = start_x
         self.y = start_y
         self.initial_x = start_x # Store initial position for reset
@@ -21,7 +22,7 @@ class Player:
         if self.frames:
             self.character_height, self.character_width, _ = self.frames[0].shape
             if start_y is None: # Fallback if start_y is not provided (e.g. for testing Player alone)
-                self.y = 480 - self.character_height # Assuming 480px game area height
+                self.y = game_area_height  - self.character_height # Assuming 480px game area height
                 self.initial_y = self.y
 
     def get_current_frame(self):
@@ -45,8 +46,8 @@ class Player:
         """
         self.x += speed 
         # Ensure player does not go beyond the right edge of the game area
-        if self.x + self.character_width > max_x:
-            self.x = max_x - self.character_width
+        # if self.x + self.character_width >= max_x + 1:
+        #    self.x = max_x - self.character_width
 
     def get_position(self):
         """
