@@ -83,8 +83,10 @@ class Game:
                 if event.key == pygame.K_SPACE and self.game_started and not self.game_over:
                     self.paused = not self.paused
                     if self.paused:
+                        self.environment.pause()
                         self.notification = "Permainan Dijeda. Tekan Spasi untuk Melanjutkan."
                     else:
+                        self.environment.resume()
                         self.notification = "Permainan Dilanjutkan!"
 
                 # Tombol 'S' dan 'Q' hanya jika belum dimulai dan belum game over

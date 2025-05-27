@@ -20,6 +20,16 @@ class Environment:
 
         self.game_start_time = 0
         self.total_game_duration = 0
+        
+        self.paused_time_total = 0
+        self.pause_start_time = None
+        self.is_paused = False
+        
+        self.green_paused_time = 0
+        self.green_pause_start = None
+
+        self.red_paused_time = 0
+        self.red_pause_start = None
 
     def reset(self):
         """
@@ -31,12 +41,23 @@ class Environment:
         self.red_light_start_time = 0
         self.game_start_time = 0
         self.total_game_duration = np.random.randint(*self.game_duration_range)
+        
+        self.is_paused = False
+        self.pause_start_time = None
+        self.paused_time_total = 0
+
+        self.green_paused_time = 0
+        self.green_pause_start = None
+
+        self.red_paused_time = 0
+        self.red_pause_start = None
 
     def start_game_timer(self):
         """
         Starts the overall game timer.
         """
         self.game_start_time = time.time()
+        
 
     def switch_to_green_light(self):
         """
@@ -45,6 +66,8 @@ class Environment:
         self.light_status = "green"
         self.green_start_time = time.time()
         self.green_duration = np.random.randint(*self.green_duration_range)
+        self.green_paused_time = 0
+        self.green_pause_start = None
         print(f"Green Light for {self.green_duration} seconds.")
 
     def switch_to_red_light(self):
@@ -54,6 +77,8 @@ class Environment:
         self.light_status = "red"
         self.red_light_start_time = time.time()
         self.red_duration = np.random.randint(*self.red_duration_range)
+        self.red_paused_time = 0
+        self.red_pause_start = None
         print(f"Red Light for {self.red_duration_range} seconds.")
 
     def is_green_light(self):
@@ -75,20 +100,23 @@ class Environment:
         return self.light_status == "initial"
 
     def get_remaining_green_time(self):
-        """
-        Returns the remaining time for the green light phase.
-        """
         if self.is_green_light():
-            return max(0, self.green_duration - (time.time() - self.green_start_time))
+            if self.is_paused:
+                elapsed = self.green_pause_start - self.green_start_time - self.green_paused_time
+            else:
+                elapsed = time.time() - self.green_start_time - self.green_paused_time
+            return max(0, self.green_duration - elapsed)
         return 0
 
     def get_remaining_red_time(self):
-        """
-        Returns the remaining time for the red light phase.
-        """
         if self.is_red_light():
-            return max(0, self.red_duration - (time.time() - self.red_light_start_time))
+            if self.is_paused:
+                elapsed = self.red_pause_start - self.red_light_start_time - self.red_paused_time
+            else:
+                elapsed = time.time() - self.red_light_start_time - self.red_paused_time
+            return max(0, self.red_duration - elapsed)
         return 0
+
 
     def is_green_light_over(self):
         """
@@ -103,12 +131,13 @@ class Environment:
         return self.is_red_light() and (time.time() - self.red_light_start_time) >= self.red_duration
 
     def get_remaining_game_time(self):
-        """
-        Returns the overall remaining game time.
-        """
-        if self.game_start_time == 0: # Game not started yet
+        if self.game_start_time == 0:
             return self.total_game_duration
-        return max(0, self.total_game_duration - (time.time() - self.game_start_time))
+        if self.is_paused:
+            elapsed = self.pause_start_time - self.game_start_time - self.paused_time_total
+        else:
+            elapsed = time.time() - self.game_start_time - self.paused_time_total
+        return max(0, self.total_game_duration - elapsed)
 
     def has_game_time_elapsed(self):
         """
@@ -123,3 +152,29 @@ class Environment:
         Checks if the player has reached the finish line.
         """
         return player_x > self.finish_line_x + 20
+
+    def pause(self):
+        if not self.is_paused:
+            self.is_paused = True
+            self.pause_start_time = time.time()
+
+            if self.is_green_light():
+                self.green_pause_start = time.time()
+            elif self.is_red_light():
+                self.red_pause_start = time.time()
+
+    def resume(self):
+        if self.is_paused:
+            pause_duration = time.time() - self.pause_start_time
+            self.paused_time_total += pause_duration
+
+            if self.is_green_light() and self.green_pause_start is not None:
+                self.green_paused_time += time.time() - self.green_pause_start
+
+            if self.is_red_light() and self.red_pause_start is not None:
+                self.red_paused_time += time.time() - self.red_pause_start
+
+            self.is_paused = False
+            self.pause_start_time = None
+            self.green_pause_start = None
+            self.red_pause_start = None
