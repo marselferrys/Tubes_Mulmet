@@ -122,10 +122,16 @@ class Visualizer:
         self.screen.blit(time_surface, (20, 20)) # Top-left corner
 
         # Draw notifications on the webcam feed area (centered horizontally, below time)
-        notification_surface = self.font_large.render(notification, True, (255, 255, 255)) # White text
-        # Adjusted Y position for notification to be lower than time
-        notification_rect = notification_surface.get_rect(center=(self.window_width // 2, self.webcam_area_height // 2 + 50))
-        self.screen.blit(notification_surface, notification_rect)
+        # Support multiline notification text
+        if notification:
+            lines = notification.split("\n")  # Pisahkan baris dengan newline
+            y = self.webcam_area_height // 2 + 30  # Titik awal vertikal
+
+            for line in lines:
+                text_surface = self.font_large.render(line, True, (255, 255, 255))
+                text_rect = text_surface.get_rect(center=(self.window_width // 2, y))
+                self.screen.blit(text_surface, text_rect)
+                y += 50  # Jarak antar baris teks
 
         # Draw buttons if provided (e.g., in initial state)
         if buttons:

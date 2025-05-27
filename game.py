@@ -60,13 +60,12 @@ class Game:
         self.min_sound_threshold_to_move = 0.01
         self.max_sound_volume = 0.2
 
-        self.notification = "Tekan 'S' atau tombol 'Start' untuk memulai"
+        self.notification = "Tekan 'S' untuk memulai\nTekan Spasi untuk Pause"
         self.buttons = [
             Button("Start (S)", self.visualizer.window_width // 2 - 150, self.visualizer.window_height - 100, 150, 50),
             Button("Quit (Q)", self.visualizer.window_width // 2 + 50, self.visualizer.window_height - 100, 150, 50)
         ]
         self.red_light_delay_start_time = 0
-
         self.play_again_button = Button("Play Again", self.visualizer.window_width // 2 - 100, self.visualizer.window_height // 2 + 100, 150, 50)
         self.exit_button = Button("Exit", self.visualizer.window_width // 2 + 100, self.visualizer.window_height // 2 + 100, 150, 50)
 
@@ -78,12 +77,23 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_running = False
+
             elif event.type == pygame.KEYDOWN:
-                if not self.game_started and not self.game_over:
+                # Tombol spasi untuk pause/resume (hanya jika game berjalan dan belum game over)
+                if event.key == pygame.K_SPACE and self.game_started and not self.game_over:
+                    self.paused = not self.paused
+                    if self.paused:
+                        self.notification = "Permainan Dijeda. Tekan Spasi untuk Melanjutkan."
+                    else:
+                        self.notification = "Permainan Dilanjutkan!"
+
+                # Tombol 'S' dan 'Q' hanya jika belum dimulai dan belum game over
+                elif not self.game_started and not self.game_over:
                     if event.key == pygame.K_s:
                         self.start_game()
                     elif event.key == pygame.K_q:
                         self.is_running = False
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if not self.game_started and not self.game_over:
                     pos = pygame.mouse.get_pos()
@@ -93,6 +103,7 @@ class Game:
                                 self.start_game()
                             elif button.text.startswith("Quit"):
                                 self.is_running = False
+
 
         ret, frame = self.cap.read()
         if not ret:
@@ -171,6 +182,13 @@ class Game:
                                      notification=self.notification, buttons=self.buttons, game_started=False)
                 self.player.update_animation_frame()
                 continue
+            
+            # Skip game logic if paused
+            if self.paused:
+                self.visualizer.draw(frame_with_landmarks, self.player, self.environment,
+                                    notification=self.notification, game_started=True)
+                self.player.update_animation_frame()
+                continue
 
             # Game Over state: If game is over, break the main loop
             if self.game_over:
@@ -178,8 +196,7 @@ class Game:
                 self.is_running = False
                 continue
 
-
-            # Check if user is in frame (still relevant for webcam display and general game flow)
+            # Check if user is in frame 
             if results and results.pose_landmarks:
                 if not is_visible(results.pose_landmarks.landmark):
                     self.notification = "Silakan pastikan tubuh bagian atas terlihat di kamera"
@@ -190,7 +207,7 @@ class Game:
 
             # Game logic based on light status
             if self.environment.is_green_light():
-                if self.environment.is_green_light_over():
+                if not self.paused and self.environment.is_green_light_over():
                     self.notification = "Bersiap untuk Red Light..."
                     self.red_light_delay_start_time = time.time()
                     self.environment.light_status = "transition_to_red"
@@ -198,25 +215,36 @@ class Game:
                     self.sound_manager.play_sound('red_light')
                     continue
 
-                sound_volume = self.input_handler.get_user_voice_volume()
+                # Ambil volume dan pitch dari suara pengguna
+                sound_volume, sound_pitch  = self.input_handler.get_user_voice_volume_and_pitch()
+                # Deteksi apakah suara cukup kuat untuk bergerak
                 sound_detected = sound_volume > self.min_sound_threshold_to_move
+                # Default multiplier 
                 sound_speed_multiplier = 0.0
-                if sound_volume > self.min_sound_threshold_to_move:
-                    normalized_volume = min(1.0, (sound_volume - self.min_sound_threshold_to_move) / (self.max_sound_volume - self.min_sound_threshold_to_move))
-                    sound_speed_multiplier = normalized_volume * 3.0
-
-                current_movement_speed = self.movement_speed
                 
                 if sound_detected:
+                   # Normalisasi volume ke rentang [0.0, 1.5]
+                    normalized_volume = min(1.5, (sound_volume - self.min_sound_threshold_to_move) / (self.max_sound_volume - self.min_sound_threshold_to_move))
+
+                    # Gunakan pitch untuk mempengaruhi multiplier, misalnya pitch 100–800 Hz → 0–5
+                    pitch_multiplier = min(5.0, max(0.0, (sound_pitch - 100) / 140))  # normalisasi pitch ke 0-5
+
+                    # Total multiplier gabungan dari volume dan pitch
+                    sound_speed_multiplier = normalized_volume * pitch_multiplier
+                    
+                # Set kecepatan gerak dasar
+                current_movement_speed = self.movement_speed
+                
+                # Jika suara terdeteksi, gerakan karakter
+                if not self.paused and sound_detected:
                     current_movement_speed += sound_speed_multiplier
-                    self.notification = f"Bergerak Maju! Suara: {sound_volume:.2f}"
+                    self.notification = f"Gerak! Suara terdeteksi: {sound_volume:.2f}, Pitch: {sound_pitch:.2f} Hz"
                     self.player.move(current_movement_speed, self.environment.finish_line_x)
                     self.player.update_animation_frame()
                 else:
                     self.notification = "Bersuara untuk Maju!"
                     self.player.update_animation_frame()
-
-
+                    
             elif self.environment.light_status == "transition_to_red":
                 if (time.time() - self.red_light_delay_start_time) >= 0.5:
                     self.environment.switch_to_red_light()
@@ -225,17 +253,17 @@ class Game:
                     self.notification = "Bersiap untuk Red Light..."
 
             elif self.environment.is_red_light():
-                if self.environment.is_red_light_over():
+                if not self.paused and self.environment.is_red_light_over():
                     self.environment.switch_to_green_light()
                     self.sound_manager.play_sound('green_light')
                     self.notification = "Green Light!"
                 else:
-                    sound_volume = self.input_handler.get_user_voice_volume()
+                    sound_volume, sound_pitch = self.input_handler.get_user_voice_volume_and_pitch()
                     sound_detected_red_light = sound_volume > self.min_sound_threshold_to_move
 
-                    if sound_detected_red_light:
+                    if not self.paused and sound_detected_red_light:
                         self.game_over = True
-                        self.notification = "Kamu Kalah: Bersuara saat lampu merah!"
+                        self.notification = f"Kamu Kalah: Bersuara (Volume: {sound_volume:.2f}, Pitch: {sound_pitch:.2f} Hz)"
                         self.sound_manager.play_sound('lose')
                         print(self.notification)
                     else:
@@ -248,7 +276,6 @@ class Game:
 
         self.cap.release()
         
-        # video_saved_message = "Video tidak disimpan." # Always "Video tidak disimpan."
         play_again = False
 
         final_result_text = "Permainan berakhir."
