@@ -1,22 +1,30 @@
 import numpy as np
-from utils import load_gif_frames # paste_character is no longer used by Player for drawing
+from utils import load_gif_frames # memuat fungsi load_gif_frames dari utils.py
 
 
 class Player:
     """
-    Represents the player character (Mario) in the game.
-    Handles its position, animation, and provides its current frame.
+    Representasi karakter pemain dalam permainan (misalnya mario).
     """
     def __init__(self, start_x=55, start_y=None, gif_path=None, game_area_height=550): # start_y will be calculated and set by Game
+        """
+        Inisialisasi objek Player.
+
+        Args:
+            start_x (int): Posisi horizontal awal.
+            start_y (int): Posisi vertikal awal (jika None, dihitung otomatis berdasarkan tinggi game area).
+            gif_path (str): Path ke file GIF animasi karakter.
+            game_area_height (int): Tinggi area permainan (untuk posisi vertikal jika start_y=None).
+        """
         self.x = start_x
         self.y = start_y
-        self.initial_x = start_x # Store initial position for reset
-        self.initial_y = start_y # Store initial y for reset
+        self.initial_x = start_x # posisi awal x untuk reset
+        self.initial_y = start_y # posisi awal y untuk reset
 
-        self.gif_path = gif_path if gif_path else 'mario.gif' # Fallback if not provided
-        self.frames = load_gif_frames(self.gif_path) # Load using the provided path
-        self.frame_index = 0
-        self.total_frames = len(self.frames)
+        self.gif_path = gif_path if gif_path else 'mario.gif' # Gunakan default path jika tidak diberikan
+        self.frames = load_gif_frames(self.gif_path) # Muat seluruh frame dari GIF animasi
+        self.frame_index = 0 # Indeks frame saat ini dalam animasi
+        self.total_frames = len(self.frames) # Total jumlah frame dalam animasi
         self.character_width = 0
         self.character_height = 0
         if self.frames:
