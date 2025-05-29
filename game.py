@@ -124,13 +124,13 @@ class Game:
 
     def start_game(self):
         """
-        Initializes game state for a new round.
+        Memulai game baru, reset posisi pemain dan status game
         """
         self.game_started = True
         self.game_over = False
         self.winner = False
         self.player.reset_position()
-        self.environment.reset() # Reset environment timers and light status
+        self.environment.reset() 
         self.environment.start_game_timer()
         self.environment.switch_to_green_light()
         self.sound_manager.play_sound('green_light')
@@ -140,7 +140,7 @@ class Game:
 
     def reset_game(self):
         """
-        Resets the game to its initial state (start screen).
+        Mengembalikan game ke posisi awal
         """
         self.game_started = False
         self.game_over = False
@@ -152,7 +152,7 @@ class Game:
 
     def check_win_lose_conditions(self, current_game_time):
         """
-        Checks if the player has won, lost due to time, or lost due to red light violation.
+        Mengecek kondisi menang atau kalah berdasarkan posisi pemain dan waktu permainan.
         """
         if self.environment.reached_finish_line(self.player.x):
             self.winner = True
@@ -169,8 +169,7 @@ class Game:
 
     def run(self):
         """
-        The main game loop for a single session.
-        Returns True if the user wants to play again, False otherwise.
+        Main loop dari permainan 
         """
         self.is_running = True # Ensure this session starts as running
         while self.is_running:
@@ -178,30 +177,30 @@ class Game:
             if not self.is_running or frame is None:
                 break
 
-            # Draw landmarks on the frame (for webcam display)
+            # Gambar pose Landmark
             frame_with_landmarks = self.input_handler.draw_landmarks(frame.copy(), results)
 
-            # Initial state: waiting for game to start
+            #Menampilkan halaman awal jika game belum dimulai
             if not self.game_started:
                 self.visualizer.draw(frame_with_landmarks, self.player, self.environment,
                                      notification=self.notification, buttons=self.buttons, game_started=False)
                 self.player.update_animation_frame()
                 continue
             
-            # Skip game logic if paused
+            # Jika game dijeda
             if self.paused:
                 self.visualizer.draw(frame_with_landmarks, self.player, self.environment,
                                     notification=self.notification, game_started=True)
                 self.player.update_animation_frame()
                 continue
 
-            # Game Over state: If game is over, break the main loop
+            # jika game sudah selesai
             if self.game_over:
                 self.visualizer.draw(frame_with_landmarks, self.player, self.environment, notification=self.notification, game_started=True)
                 self.is_running = False
                 continue
 
-            # Check if user is in frame 
+            # Cek apakah tubuh bagian atas terlihat di kamera  
             if results and results.pose_landmarks:
                 if not is_visible(results.pose_landmarks.landmark):
                     self.notification = "Silakan pastikan tubuh bagian atas terlihat di kamera"
@@ -210,7 +209,7 @@ class Game:
                 else:
                     self.notification = ""
 
-            # Game logic based on light status
+            # Logika saat lampu hijau
             if self.environment.is_green_light():
                 if not self.paused and self.environment.is_green_light_over():
                     self.notification = "Bersiap untuk Red Light..."
@@ -251,6 +250,7 @@ class Game:
                     self.player.update_animation_frame()
                     
             elif self.environment.light_status == "transition_to_red":
+                # Transisi dari hijau ke merah
                 if (time.time() - self.red_light_delay_start_time) >= 0.5:
                     self.environment.switch_to_red_light()
                     self.notification = "Red Light! Jangan Bersuara!"
@@ -289,13 +289,13 @@ class Game:
         elif self.game_over:
             final_result_text = self.notification
 
-        # Draw the final message screen with only restart/exit buttons
+        # Tampilkan layar akhir permainan dengan pesan hasil dan dua tombol: restart dan keluar
         self.visualizer.display_final_message(final_result_text,
-                                                  save_button=None, # No save button
+                                                  save_button=None, 
                                                   restart_button=self.play_again_button,
                                                   exit_button=self.exit_button)
 
-        # Wait for user input on the final screen
+        # Tunggu input pengguna di layar akhir
         waiting_for_choice = True
         while waiting_for_choice:
             for event in pygame.event.get():
@@ -313,14 +313,15 @@ class Game:
                         play_again = False
                         waiting_for_choice = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r: # Restart with R key
+                    if event.key == pygame.K_r: # Tekan R untuk main lagi
                         print("Memulai ulang permainan...")
                         play_again = True
                         waiting_for_choice = False
-                    elif event.key == pygame.K_q: # Quit with Q key
+                    elif event.key == pygame.K_q: # Tekan Q untuk keluar
                         print("Keluar dari permainan.")
                         play_again = False
                         waiting_for_choice = False
 
+        # Keluar dari pygame setelah pengguna memilih
         pygame.quit()
         return play_again
