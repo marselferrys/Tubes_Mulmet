@@ -92,3 +92,9 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
 ### 🔹 Minggu 2
 ### 🔹 Minggu 3
 ### 🔹 Minggu 4
+
+---
+Laporan: 
+
+---
+Demo Program: 
