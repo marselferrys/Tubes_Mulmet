@@ -1,9 +1,11 @@
+#import semua modul eksternal dan internal yang di butuhkan
 import pygame
 import cv2
 import time
 import numpy as np
 import os
 
+# Import semua komponen game yang diperlukan
 from player import Player
 from environment import Environment
 from input_handler import InputHandler
@@ -11,19 +13,21 @@ from visualizer import Visualizer, Button
 from sound_manager import SoundManager
 from utils import calculate_sum, is_visible
 
-# Get the absolute path of the directory where this script (main.py) is located
+#ambil path direktori utama tempat script dijalankan (main.py)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# Define the assets directory relative to the base directory
+#tentukan direktori aset game
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 class Game:
     """
-    Main game class that orchestrates all components and manages the game loop.
+    Kelas utama yang mengatur seluruh alur permainan, termasuk logika game loop, input pengguna, deteksi webcam, suara, dan visualisasi.
     """
     def __init__(self):
+        # insialisasi Pygame dan font
         pygame.init()
-        pygame.font.init() # Initialize the font module explicitly here
+        pygame.font.init()
+        # inisialisasi semua komponen game
 
         self.sound_manager = SoundManager(assets_dir=ASSETS_DIR)
         self.input_handler = InputHandler()
@@ -34,18 +38,19 @@ class Game:
         
         self.environment = Environment(window_width=self.visualizer.window_width)
 
-        # Calculate player's starting Y position after visualizer is initialized
+        # tentukan posisi awal karakter pemain
         player_game_area_y = self.visualizer.game_area_height - self.player.character_height
         self.player.y = player_game_area_y
-        self.player.initial_y = player_game_area_y # Update initial_y for reset
+        self.player.initial_y = player_game_area_y # digunakan untuk reset posisi
 
-
+        # inisialisasi webcam untuk menangkap input pengguna
         self.cap = cv2.VideoCapture(0)
         if not self.cap.isOpened():
             print("ERROR: Tidak dapat mengakses webcam. Pastikan webcam terhubung dan tidak digunakan oleh aplikasi lain.")
             self.is_running = False
             return
 
+        #parameter kontrol game
         self.is_running = True
         self.game_started = False
         self.game_over = False
@@ -60,6 +65,7 @@ class Game:
         self.min_sound_threshold_to_move = 0.01
         self.max_sound_volume = 0.2
 
+        # Inisialisasi notifikasi awal dan tombol
         self.notification = "Tekan 'S' untuk memulai\nTekan Spasi untuk Pause"
         self.buttons = [
             Button("Start (S)", self.visualizer.window_width // 2 - 150, self.visualizer.window_height - 100, 150, 50),
@@ -72,7 +78,7 @@ class Game:
 
     def handle_input(self):
         """
-        Processes Pygame events (keyboard, mouse) and captures a webcam frame.
+        tangani event dari keybord atau mouse, ambil frame dari webcam, dan proses input pengguna
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -107,6 +113,7 @@ class Game:
                                 self.is_running = False
 
 
+        # Ambil frame dari webcam dan proses landmark tubuh
         ret, frame = self.cap.read()
         if not ret:
             print("Gagal mengambil frame dari webcam.")
