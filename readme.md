@@ -1,3 +1,6 @@
+<div align="center">
+<img src="assets/poster.png" width="100%" />
+
 # Tugas Besar Mata Kuliah Sistem / teknologi multimedia (IF4021)
 
 ### Dosen Pengampu: **Martin Clinton Tosima Manullang, S.T., M.T., PhD.**
@@ -29,8 +32,8 @@ Berikut adalah teknologi dan alat yang digunakan dalam proyek ini:
 
 | Logo                                                                                                                           | Nama Teknologi | Fungsi                                                                           |
 | ------------------------------------------------------------------------------------------------------------------------------ | -------------- | -------------------------------------------------------------------------------- |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python Logo" width="60">            | Python         | Bahasa pemrograman utama untuk pengembangan filter.                              |
-| <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="VS Code Logo" width="60"> | VS Code        | Editor teks untuk mengedit skrip secara efisien dengan dukungan ekstensi Python. |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" style="width:50px;" alt="Python Logo" width="60">            | Python         | Bahasa pemrograman utama untuk pengembangan filter.                              |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" style="width:50px;" alt="VS Code Logo" width="60"> | VS Code        | Editor teks untuk mengedit skrip secara efisien dengan dukungan ekstensi Python. |
 
 ---
 
