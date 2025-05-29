@@ -1,3 +1,4 @@
+#import modul eksternal yang diperlukan
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -6,35 +7,39 @@ from scipy.signal import butter, lfilter
 
 class InputHandler:
     """
-    Handles input from webcam (MediaPipe pose detection) and microphone (sound detection).
+    kelas untuk menangani input video dan audio, mendeteksi pose manusia,
     """
     def __init__(self):
+        # Inisialisasi MediaPipe Pose untuk mendeteksi pose manusia
         self.mp_pose = mp.solutions.pose
         self.pose = self.mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
         self.drawing = mp.solutions.drawing_utils
 
     def process_frame(self, frame):
-        """Processes a single video frame to detect human pose."""
+        # mengubah frame dari BGR ke RGB untuk MediaPipe
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.pose.process(rgb_frame)
         return results
 
     def draw_landmarks(self, frame, results):
-        """Draws pose landmarks on the given frame."""
+        # menggambar landmark pose pada frame jika pose berhasil dideteksi
         if results.pose_landmarks:
             self.drawing.draw_landmarks(frame, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS)
         return frame
 
     def detect_movement(self, results, prev_hand_pos, threshold=15):
-        """Detects significant hand movement based on MediaPipe landmarks."""
+        # mendeteksi pergerakan tangan berdasarkan landmark pose
         if results and results.pose_landmarks and len(results.pose_landmarks.landmark) > 16:
             landmarks = results.pose_landmarks.landmark
+            #ambil posisi x dari tangan kiri (index 15) dan tangan kanan (index 16)
             current_left_hand_x = landmarks[15].x * 640
             current_right_hand_x = landmarks[16].x * 640
 
+            # jika posisi tangan sebelumnya tidak ada, kembalikan False dan posisi tangan saat ini
             if prev_hand_pos is None:
                 return False, [current_left_hand_x, current_right_hand_x]
 
+            # hitung pergerakan tangan dengan membandingkan posisi saat ini dengan posisi sebelumnya
             left_movement = abs(current_left_hand_x - prev_hand_pos[0]) > threshold
             right_movement = abs(current_right_hand_x - prev_hand_pos[1]) > threshold
 
