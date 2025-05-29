@@ -1,12 +1,12 @@
 # Tugas Besar Mata Kuliah Sistem / teknologi multimedia (IF4021)
 
-### Dosen Pengampu: **Martin Clinton Tosima Manullang, S.T., M.T..**
+### Dosen Pengampu: **Martin Clinton Tosima Manullang, S.T., M.T., PhD.**
 
 # Suara Menentukan Nasib
 ---
 
 ## 🎯 Deskripsi Proyek
-Suara Menentukan Nasib adalah sebuah program permainan sederhana yang dibuat menggunakan Python. Dalam permainan ini, karakter Mario akan bergerak berdasarkan intensitas suara yang dideteksi dari mikrofon. Namun, berbeda dari permainan biasa, Mario hanya bisa bergerak jika tangan dan kepala pemain terlihat di depan kamera. Deteksi gerakan dan posisi tubuh dilakukan secara real-time untuk memastikan pemain benar-benar ada dalam frame. Permainan ini terinspirasi dari elemen "Red Light, Green Light" pada serial Squid Game, di mana penembak dari Squid Game akan memantau pergerakan. Jika suara yang terdeteksi terlalu keras saat lampu merah menyala, Mario akan langsung tereliminasi. Sebaliknya, saat lampu hijau menyala dan suara cukup kuat, Mario akan bergerak maju.Permainan memiliki batas waktu untuk mencapai garis akhir. Di akhir sesi, sistem akan menampilkan notifikasi seperti "Berhasil Menang" atau "Gagal - Terdeteksi Saat Lampu Merah", tergantung pada performa pemain. 
+Suara Menentukan Nasib adalah sebuah program permainan sederhana yang dibuat menggunakan Python. Dalam permainan ini, karakter Mario akan bergerak berdasarkan intensitas suara yang dideteksi dari mikrofon. Namun, berbeda dari permainan biasa, Mario hanya bisa bergerak jika tangan dan kepala pemain terlihat di depan kamera. Deteksi gerakan dan posisi tubuh dilakukan secara real-time untuk memastikan pemain benar-benar ada dalam frame. Permainan ini terinspirasi dari elemen "Red Light, Green Light" pada serial Squid Game, di mana penembak dari Squid Game akan memantau pergerakan. Jika suara yang terdeteksi terlalu keras saat lampu merah menyala, Mario akan langsung tereliminasi. Sebaliknya, saat lampu hijau menyala dan suara cukup kuat, Mario akan bergerak maju. Permainan memiliki batas waktu untuk mencapai garis akhir. Di akhir sesi, sistem akan menampilkan notifikasi jika menang  "Selamat! Kamu Menang" atau jika kalah "Kamu Kalah: Bersuara" dan menampilkan volume dan pitch suara pemain, tergantung pada performa pemain. 
 
 
 ---
@@ -38,11 +38,16 @@ Berikut adalah teknologi dan alat yang digunakan dalam proyek ini:
 
 Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fungsinya:
 
-| **Library**                | **Fungsi**                                                                                         |
-| -------------------------- | -------------------------------------------------------------------------------------------------- |
-| `cv2`                      | Digunakan untuk menangkap gambar dari kamera dan memproses gambar secara langsung.                 |
-| `mediapipe`                | Digunakan untuk mendeteksi landmark wajah, seperti posisi hidung, untuk mendeteksi gerakan kepala. |
-| `Scipy`, `numpy`           | Digunakan untuk bahan oprasi pembuatan program                                                     |
+| **Library**        | **Fungsi**                                                                                                                                                                                                                                                                                                                                                         |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cv2`              | Digunakan untuk menangkap gambar dari kamera (`VideoCapture`) dan memproses gambar secara langsung, seperti memberikan efek blur.                                                                                                                                                                                                                                 |
+| `mediapipe`        | Digunakan untuk mendeteksi landmark tubuh, wajah, dan tangan. Contohnya: posisi hidung (`pose_landmarks.landmark[0]`) untuk mendeteksi gerakan kepala, serta landmark tangan (`pose_landmarks.landmark[15]`, `pose_landmarks.landmark[16]`) untuk mendeteksi gerakan tangan.                                                |
+| `pygame`           | Digunakan untuk membuat dan mengelola jendela game (`display`), menangani input pengguna (keyboard dan mouse melalui `event`), menampilkan grafis 2D (karakter, latar belakang, tombol, teks melalui `blit`, `draw`), serta memutar audio (`mixer`).                                                                       |
+| `numpy`            | Digunakan untuk operasi numerik, terutama pada array yang mewakili gambar dan data audio.                                                                                                                                                                                                                                   |
+| `scipy`            | Digunakan untuk memproses sinyal audio, misalnya dengan *band-pass filter* melalui modul `scipy.signal` untuk mendeteksi suara berdasarkan frekuensi tertentu.                                                                                                                                                              |
+| `sounddevice`      | Digunakan untuk menangkap input suara dari mikrofon secara real-time. Sering digunakan bersama `numpy` untuk analisis volume dan pitch suara dalam game berbasis input audio.                                                                                                                                               |
+| `PIL` (`Pillow`)   | Digunakan untuk memuat, memproses, dan menampilkan gambar (misalnya: membuka gambar tombol, background, atau ikon), serta mengubah ukuran atau format gambar sebelum ditampilkan di jendela game dengan `pygame`.                                                                                                           |
+
 
 ---
 
@@ -51,7 +56,6 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
 
     ```bash
     git clone https://github.com/marselferrys/Tubes_Mulmet.git
-    cd dsp-realtime-rppg-respiration
     ```
 
 2. Masuk ke direktori proyek
@@ -75,7 +79,7 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
     uv pip install -r requirements.txt # uv
     ```
 
-4. Jalankan program:
+4. Jalankan program di CMD/Terminal:
     ```bash
     python main.py
     ```
