@@ -6,7 +6,7 @@
 ---
 
 ## 🎯 Deskripsi Proyek
-
+Suara Menentukan Nasib adalah sebuah program permainan sederhana yang dibuat menggunakan Python. Dalam permainan ini, karakter Mario akan bergerak berdasarkan intensitas suara yang dideteksi dari mikrofon. Namun, berbeda dari permainan biasa, Mario hanya bisa bergerak jika tangan dan kepala pemain terlihat di depan kamera. Deteksi gerakan dan posisi tubuh dilakukan secara real-time untuk memastikan pemain benar-benar ada dalam frame. Permainan ini terinspirasi dari elemen "Red Light, Green Light" pada serial Squid Game, di mana penembak dari Squid Game akan memantau pergerakan. Jika suara yang terdeteksi terlalu keras saat lampu merah menyala, Mario akan langsung tereliminasi. Sebaliknya, saat lampu hijau menyala dan suara cukup kuat, Mario akan bergerak maju.Permainan memiliki batas waktu untuk mencapai garis akhir. Di akhir sesi, sistem akan menampilkan notifikasi seperti "Berhasil Menang" atau "Gagal - Terdeteksi Saat Lampu Merah", tergantung pada performa pemain. 
 
 
 ---
