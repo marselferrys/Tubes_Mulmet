@@ -11,7 +11,7 @@ from environment import Environment
 from input_handler import InputHandler
 from visualizer import Visualizer, Button
 from sound_manager import SoundManager
-from utils import calculate_sum, is_visible
+from utils import is_visible
 
 #ambil path direktori utama tempat script dijalankan (main.py)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -56,8 +56,6 @@ class Game:
         self.game_over = False
         self.winner = False
         self.paused = False
-
-        self.prev_hand_pos = None
         self.user_body_sum_red_light = 0
 
         self.movement_speed = 15
@@ -138,7 +136,6 @@ class Game:
         self.sound_manager.play_sound('green_light')
         
         self.notification = "Green Light!"
-        self.prev_hand_pos = None
         self.user_body_sum_red_light = 0
 
     def reset_game(self):
@@ -151,7 +148,6 @@ class Game:
         self.player.reset_position()
         self.environment.reset()
         self.notification = "Tekan 'S' atau tombol 'Start' untuk memulai"
-        self.prev_hand_pos = None
         self.user_body_sum_red_light = 0
 
     def check_win_lose_conditions(self, current_game_time):
