@@ -27,25 +27,6 @@ class InputHandler:
             self.drawing.draw_landmarks(frame, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS)
         return frame
 
-    def detect_movement(self, results, prev_hand_pos, threshold=15):
-        # mendeteksi pergerakan tangan berdasarkan landmark pose
-        if results and results.pose_landmarks and len(results.pose_landmarks.landmark) > 16:
-            landmarks = results.pose_landmarks.landmark
-            #ambil posisi x dari tangan kiri (index 15) dan tangan kanan (index 16)
-            current_left_hand_x = landmarks[15].x * 640
-            current_right_hand_x = landmarks[16].x * 640
-
-            # jika posisi tangan sebelumnya tidak ada, kembalikan False dan posisi tangan saat ini
-            if prev_hand_pos is None:
-                return False, [current_left_hand_x, current_right_hand_x]
-
-            # hitung pergerakan tangan dengan membandingkan posisi saat ini dengan posisi sebelumnya
-            left_movement = abs(current_left_hand_x - prev_hand_pos[0]) > threshold
-            right_movement = abs(current_right_hand_x - prev_hand_pos[1]) > threshold
-
-            return left_movement or right_movement, [current_left_hand_x, current_right_hand_x]
-        return False, prev_hand_pos
-
     def _butter_bandpass(self, lowcut, highcut, fs, order=5):
         """Creates Butterworth band-pass filter coefficients."""
         nyq = 0.5 * fs
