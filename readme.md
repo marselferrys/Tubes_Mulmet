@@ -3,7 +3,7 @@
 
 # Tugas Besar Mata Kuliah Sistem / teknologi multimedia (IF4021)
 
-### Dosen Pengampu: **Martin Clinton Tosima Manullang, S.T., M.T., PhD.**
+### Dosen Pengampu: **Martin C.T Manullang, S.T., M.T., PhD.**
 
 # Suara Menentukan Nasib
 ---
