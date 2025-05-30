@@ -53,7 +53,7 @@ class Visualizer:
         self.window_height = max(int(screen_height * 0.9), 600)
 
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
-        pygame.display.set_caption("Squid Game: Lampu Merah Hijau")
+        pygame.display.set_caption("Suara Menentukan Nasib")
 
         # Area tampilan webcam dan permainan
         self.webcam_area_height = int(self.window_height * 0.5)
