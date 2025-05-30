@@ -28,7 +28,7 @@ class InputHandler:
         return frame
 
     def _butter_bandpass(self, lowcut, highcut, fs, order=5):
-        """Creates Butterworth band-pass filter coefficients."""
+        # Membuat koefisien filter band-pass Butterworth, digunakan untuk menyaring frekuensi audio
         nyq = 0.5 * fs
         low = lowcut / nyq
         high = highcut / nyq
@@ -36,16 +36,14 @@ class InputHandler:
         return b, a
 
     def _butter_bandpass_filter(self, data, lowcut, highcut, fs, order=5):
-        """Applies the band-pass filter."""
+        # Menerapkan filter band-pass Butterworth pada data audio
         b, a = self._butter_bandpass(lowcut, highcut, fs, order=order)
         y = lfilter(b, a, data)
         return y
 
     def detect_pitch_fft(self, audio_data, fs):
-        """
-        Detects dominant frequency in audio using FFT.
-        """
-        audio_data -= np.mean(audio_data)  # Remove DC offset
+        # Menggunakan FFT untuk mendeteksi frekuensi dominan dari data audio.
+        audio_data -= np.mean(audio_data)  
         window = np.hamming(len(audio_data))
         windowed_data = audio_data * window
 
@@ -59,9 +57,7 @@ class InputHandler:
         return dominant_freq
 
     def get_user_voice_volume_and_pitch(self, lowcut=128.0, highcut=1024.0, fs=44100, order=5):
-        """
-        Records and returns RMS volume and dominant frequency using FFT.
-        """
+        # Merekam suara pengguna dan menghitung volume serta pitch
         try:
             duration = 0.1  # 100 ms
             audio = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float32')
