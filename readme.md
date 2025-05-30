@@ -95,7 +95,7 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
 
 ---
 Laporan: 
-https://www.overleaf.com/6114377124hynsnbqqrfpv#c662dc
+[report.pdf](https://www.overleaf.com/6114377124hynsnbqqrfpv#c662dc)
 
 ---
 Demo Program: 
