@@ -29,45 +29,31 @@ class Player:
         self.character_height = 0
         if self.frames:
             self.character_height, self.character_width, _ = self.frames[0].shape
-            if start_y is None: # Fallback if start_y is not provided (e.g. for testing Player alone)
-                self.y = game_area_height  - self.character_height # Assuming 480px game area height
+            if start_y is None: # jika start_y tidak diberikan, atur posisi y agar karakter berada di bawah area permainan
+                self.y = game_area_height  - self.character_height 
                 self.initial_y = self.y
 
     def get_current_frame(self):
-        """
-        Returns the current animation frame of the player as an RGBA NumPy array.
-        """
+        # Mengembalikan frame animasi saat ini dalam format array Numpy RGBA
         if self.frames:
             return self.frames[self.frame_index % self.total_frames]
         return None
 
     def update_animation_frame(self):
-        """
-        Advances the animation frame.
-        """
+        # Memperbarui indeks frame untuk animasi karakter. (bergerak ke frame berikutnya)
         self.frame_index += 1
 
     def move(self, speed, max_x):
-        """
-        Moves the player horizontally by a given speed,
-        ensuring it doesn't go beyond max_x.
-        """
+        # Menggerakkan pemain secara horizontal sebesar 'speed'. Memastikan pemain tidak keluar dari batas kanan area permainan.
         self.x += speed 
-        # Ensure player does not go beyond the right edge of the game area
-        # if self.x + self.character_width >= max_x + 1:
-        #    self.x = max_x - self.character_width
 
     def get_position(self):
-        """
-        Returns the current (x, y) position of the player (relative to game area top-left).
-        """
+        # mengembalikan posisi (x, y) pemain relatif terhadap kiri atas area permainan.
         return self.x, self.y
 
     def reset_position(self):
-        """
-        Resets the player's position to its initial starting point.
-        """
+        # Mengembalikan posisi pemain ke posisi awal (initial_x, initial_y).
         self.x = self.initial_x
-        self.y = self.initial_y # Reset y position as well
-        self.frame_index = 0 # Reset animation as well
+        self.y = self.initial_y 
+        self.frame_index = 0 
 
