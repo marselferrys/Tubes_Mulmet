@@ -90,8 +90,8 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
 ## 🗓️ Logbook Mingguan
 | Week | Task | Person | Status |
 | :---: | :---: | :---: | :---: |
-| Week 1 | - Finding ideas and code reference to build game <br> - Creating Repository | Marchel  & Silva  | Done |
-| Week 2 | - Searching for game icons <br> - Develop game code <br> - develop code to detect hand and face  <br> - develop code to detect sound  | Marchel & Silva & Irma| Done
+| Week 1 | - Finding ideas and code reference to develop game <br> - Creating Repository | Marchel  & Silva  | Done |
+| Week 2 | - Searching for game icons <br> - Develop the game code <br> - develop code to detect hand and face  <br> - develop code to detect the sound  | Marchel & Silva & Irma| Done
 | Week 3 | - Testing and debugging the game <br> - Finalizing the program code <br> - Preparation and Finalization of the Report <br> - creating the readme| Marchel & Silva & Irma | Done |na | Done |
 
 ---
