@@ -100,4 +100,4 @@ Laporan:
 
 ---
 Demo Program: 
-[LINK](https://youtu.be/26eCZd7lEyA)
+[Link](https://youtu.be/26eCZd7lEyA)
