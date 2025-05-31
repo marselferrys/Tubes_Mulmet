@@ -92,7 +92,7 @@ Berikut adalah daftar library Python yang digunakan dalam proyek ini, beserta fu
 | :---: | :---: | :---: | :---: |
 | Week 1 | - Installing OpenCV, Pygame and Mediapipe modules <br> - Save the requirements.txt file for the purpose of installing dependencies. <br> - Creating Repository | Marchel  & Silva  | Done |
 | Week 2 | - Searching for game icons <br> - Develop game code <br> - develop code to detect hand and face  <br> - develop code to detect sound  | Marchel & Silva & Irma| Done
-| Week 3 | - Testing and debugging the game <br> - Finalizing the program code <br> - Preparation and Finalization of the Report <br> <br> creating the readme| Marchel & Silva & Irma | Done |na | Done |
+| Week 3 | - Testing and debugging the game <br> - Finalizing the program code <br> - Preparation and Finalization of the Report <br> - creating the readme| Marchel & Silva & Irma | Done |na | Done |
 
 ---
 Laporan: 
